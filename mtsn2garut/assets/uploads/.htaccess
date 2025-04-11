@@ -1,0 +1,34 @@
+# Prevent directory listing
+Options -Indexes
+
+# Prevent script execution
+SetHandler none
+SetHandler default-handler
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .phps
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .phps
+
+# Only allow image files
+<FilesMatch "(?i)\.(jpg|jpeg|png|gif|webp)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Deny access to all other file types
+<FilesMatch "(?i)^.*\.(?!(jpg|jpeg|png|gif|webp)$)[^.]*$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Additional security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# Enable CORS for image files
+<IfModule mod_headers.c>
+    <FilesMatch "(?i)\.(jpg|jpeg|png|gif|webp)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
