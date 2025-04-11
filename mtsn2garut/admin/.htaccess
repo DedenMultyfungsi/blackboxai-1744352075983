@@ -1,0 +1,22 @@
+Options -Indexes
+RewriteEngine On
+
+# Redirect to login if not logged in
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ login.php [L]
+
+# Prevent direct access to includes directory
+RewriteRule ^includes/ - [F,L]
+
+# Basic security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+# PHP error handling
+php_flag display_errors off
+php_value error_reporting E_ALL & ~E_NOTICE & ~E_DEPRECATED
